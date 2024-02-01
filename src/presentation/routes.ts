@@ -1,23 +1,13 @@
-import { Router } from 'express';
-
-
-
+import { Router } from "express";
+import { CertificationRoutes, ProjectRoutes } from ".";
 
 export class AppRoutes {
-
-
   static get routes(): Router {
-
     const router = Router();
-    
-    // Definir las rutas
-    // router.use('/api/todos', /*TodoRoutes.routes */ );
 
-
+    router.use("/api/projects", ProjectRoutes.routes);
+    router.use("/api/certifications", CertificationRoutes.routes);
 
     return router;
   }
-
-
 }
-
