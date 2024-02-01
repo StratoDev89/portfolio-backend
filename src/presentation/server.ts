@@ -23,6 +23,10 @@ export class Server {
 
   async start() {
     this.app.use(cors());
+
+    this.app.get('', (req, res) => {
+      res.status(200).json({message:'pingpong'})
+    })
     this.app.use(express.json()); // raw
     this.app.use(express.urlencoded({ extended: true })); // x-www-form-urlencoded
     this.app.use("/app", express.static("uploads"));
