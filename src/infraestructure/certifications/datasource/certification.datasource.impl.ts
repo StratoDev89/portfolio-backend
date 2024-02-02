@@ -11,7 +11,7 @@ export class CertificationDatasourceImpl implements CertificationDatasource {
   async create(
     createCertificationDto: CreateCertificationDto
   ): Promise<CertificationEntity> {
-    const { title, image } = createCertificationDto;
+    const { title, url } = createCertificationDto;
 
     const isCertification = await CertificationModel.findOne({
       title: createCertificationDto.title,
@@ -21,7 +21,7 @@ export class CertificationDatasourceImpl implements CertificationDatasource {
       throw CustomError.badRequest("Certification title already exists");
     }
 
-    const data = { title, image };
+    const data = { title, url };
 
     const certification = new CertificationModel(data);
     certification.save();

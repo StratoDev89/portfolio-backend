@@ -5,7 +5,6 @@ import {
   CertificationRepositoryImpl,
 } from "../../infraestructure";
 import { ValidationMiddelware, AuthMiddelware } from "..";
-import { MulterAdapter } from "../../config/multer.adapter";
 
 export class CertificationRoutes {
   static get routes(): Router {
@@ -23,7 +22,6 @@ export class CertificationRoutes {
     router.post(
       "",
       AuthMiddelware.checkAuthHeaders,
-      MulterAdapter.fileMiddelware().single("file"),
       ValidationMiddelware.validateCreateCertificationData,
       controller.create
     );

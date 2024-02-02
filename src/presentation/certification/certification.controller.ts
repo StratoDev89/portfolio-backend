@@ -9,25 +9,15 @@ import {
   DeleteCertification,
   UpdateCertification,
 } from "../../domain";
-import { UploadFileService } from "..";
 
 export class CertificationtController {
   constructor(private certificationRepository: CertificationRepository) {}
 
   create = async (req: Request, res: Response) => {
-    let publicImageId: string | null = null;
-
     try {
-      const { title, file } = req.body.createCertificationDto;
+      const { title, url } = req.body.createCertificationDto;
 
-      const image = await UploadFileService.uploadSingle(file);
-
-      if (!image) {
-        return res.status(500).json({ error: "Cloudinary error" });
-      }
-
-      publicImageId = image.id;
-      const data = { title, image };
+      const data = { title, url };
 
       const certification = await new CreateCertification(
         this.certificationRepository
@@ -35,7 +25,6 @@ export class CertificationtController {
 
       res.status(201).json(certification);
     } catch (error) {
-      if (publicImageId) await UploadFileService.deleteFile(publicImageId);
       this.errorHandler(error, res);
     }
   };
@@ -73,11 +62,8 @@ export class CertificationtController {
       const certification = await new DeleteCertification(
         this.certificationRepository
       ).execute(id);
-      const publicImageId = certification.image.id;
 
-      const wasDeleted = await UploadFileService.deleteFile(publicImageId);
-
-      res.status(200).json({ certification, cloudinaryDeleted: wasDeleted });
+      res.status(200).json(certification);
     } catch (error) {
       this.errorHandler(error, res);
     }

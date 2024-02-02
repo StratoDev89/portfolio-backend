@@ -2,15 +2,12 @@ export class CertificationEntity {
   constructor(
     public readonly id: string,
     public readonly title: string,
-    public readonly image: { id: string; url: string }
+    public readonly url: string
   ) {}
 
   static fromObject(object: { [key: string]: any }): CertificationEntity {
-    const { id, _id, title, image } = object;
+    const { id, _id, title, url } = object;
 
-    return new CertificationEntity(id || _id, title, {
-      id: image.id,
-      url: image.url,
-    });
+    return new CertificationEntity(id || _id, title, url);
   }
 }

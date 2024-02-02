@@ -26,6 +26,7 @@ export class JoiAdapter {
   static validateCreateCertificationSchema(data: any) {
     const schema = Joi.object({
       title: this.title.required(),
+      url: this.url.required(),
     });
 
     const { error } = schema.validate(data);
