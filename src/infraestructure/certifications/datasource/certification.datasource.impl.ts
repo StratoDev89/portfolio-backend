@@ -1,4 +1,5 @@
-import { CertificationModel } from "../../../data/mongo";
+// import { CertificationModel } from "../../../data/mongo";
+import { CertificationModel } from "../../../data/mongo/models/certification.model";
 import {
   CertificationDatasource,
   CertificationEntity,
