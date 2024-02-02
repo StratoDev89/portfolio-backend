@@ -16,8 +16,16 @@ export class ValidationMiddelware {
     }
     const file = req.file;
 
-    const { title, description, techs } = req.body;
-    req.body.createProjectDto = { title, description, techs, file };
+    const { title, description, techs, charge, projectUrl } = req.body;
+    
+    req.body.createProjectDto = {
+      title,
+      description,
+      techs,
+      charge,
+      projectUrl,
+      file,
+    };
 
     next();
   }

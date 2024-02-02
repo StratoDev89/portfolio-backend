@@ -1,9 +1,11 @@
-import Joi  from "joi";
+import Joi from "joi";
 
 export class JoiAdapter {
   private static title = Joi.string();
   private static description = Joi.string();
   private static techs = Joi.string();
+  private static charge = Joi.string();
+  private static projectUrl = Joi.string();
   private static image = Joi.any();
   private static url = Joi.string();
 
@@ -12,6 +14,8 @@ export class JoiAdapter {
       title: this.title.required(),
       description: this.description.required(),
       techs: this.techs.required(),
+      charge: this.charge.required(),
+      projectUrl: this.projectUrl.required(),
     });
 
     const { error } = schema.validate(data);

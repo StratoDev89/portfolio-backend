@@ -10,7 +10,10 @@ const projectSchema = new mongoose.Schema({
     type: String,
     required: [true, "description is required"],
   },
-
+  charge: {
+    type: String,
+    required: [true, "charge id is required"],
+  },
   techs: {
     type: String,
     required: [true, "techs is required"],
@@ -24,6 +27,10 @@ const projectSchema = new mongoose.Schema({
       type: String,
       required: [true, "image url is required"],
     },
+  },
+  projectUrl: {
+    type: String,
+    required: [true, "projectUrl id is required"],
   },
 });
 
