@@ -1,5 +1,5 @@
 import { envs } from "./config/envs";
-import { MongoConnection } from "./data";
+import { MongoConnection } from "./data/mongo/connection";
 import { AppRoutes, Server } from "./presentation";
 
 (async () => {

@@ -1,4 +1,4 @@
-import { ProjectModel } from "../../../data";
+import { ProjectModel } from "../../../data/mongo/models/project.model";
 import {
   CreateProjectDto,
   CustomError,
