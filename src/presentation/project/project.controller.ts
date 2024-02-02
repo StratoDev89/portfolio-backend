@@ -10,30 +10,34 @@ import {
   UpdateProjectDto,
 } from "../../domain";
 import { UploadFileService } from "..";
-import { envs } from "../../config";
 
 export class ProjectController {
   constructor(private projectRepository: ProjectRepository) {}
 
   create = async (req: Request, res: Response) => {
-    const { file, ...body } = req.body.createProjectDto;
-    const publicPath = "public/uploads/projects";
+    let publicImageId: string | null = null;
 
-    const filename = UploadFileService.uploadSingle(file, publicPath);
-    if (!filename) {
-      return res.status(500).json({ error: "Internal server error" });
+    try {
+      const { file, ...body } = req.body.createProjectDto;
+
+      const image = await UploadFileService.uploadSingle(file);
+
+      if (!image) {
+        return res.status(500).json({ error: "Cloudinary error" });
+      }
+
+      publicImageId = image.id;
+
+      const data = { ...body, image };
+
+      const project = await new CreateProject(this.projectRepository).execute(
+        data
+      );
+      res.status(201).json(project);
+    } catch (error) {
+      if (publicImageId) await UploadFileService.deleteFile(publicImageId);
+      this.errorHandler(error, res);
     }
-
-    const imageUrl = `${envs.HOST}/app/projects/${filename}`;
-    const data = { image: imageUrl, ...body };
-
-    new CreateProject(this.projectRepository)
-      .execute(data)
-      .then((project) => res.status(201).json(project))
-      .catch((error) => {
-        UploadFileService.deleteFile(filename, publicPath);
-        this.errorHandler(error, res);
-      });
   };
 
   get = (req: Request, res: Response) => {
@@ -62,13 +66,22 @@ export class ProjectController {
       .catch((error) => this.errorHandler(error, res));
   };
 
-  delete = (req: Request, res: Response) => {
-    const { id } = req.params;
+  delete = async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
 
-    new DeleteProject(this.projectRepository)
-      .execute(id)
-      .then((project) => res.status(200).json(project))
-      .catch((error) => this.errorHandler(error, res));
+      const project = await new DeleteProject(this.projectRepository).execute(
+        id
+      );
+
+      const publicImageId = project.image.id;
+
+      const wasDeleted = await UploadFileService.deleteFile(publicImageId);
+
+      res.status(200).json({ project, cloudinaryDeleted: wasDeleted });
+    } catch (error) {
+      this.errorHandler(error, res);
+    }
   };
 
   private errorHandler(error: unknown, res: Response) {

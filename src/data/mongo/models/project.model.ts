@@ -16,8 +16,14 @@ const projectSchema = new mongoose.Schema({
     required: [true, "techs is required"],
   },
   image: {
-    type: String,
-    required: [true, "image is required"],
+    id: {
+      type: String,
+      required: [true, "image id is required"],
+    },
+    url: {
+      type: String,
+      required: [true, "image url is required"],
+    },
   },
 });
 

@@ -10,30 +10,34 @@ import {
   UpdateCertification,
 } from "../../domain";
 import { UploadFileService } from "..";
-import { envs } from "../../config";
 
 export class CertificationtController {
   constructor(private certificationRepository: CertificationRepository) {}
 
   create = async (req: Request, res: Response) => {
-    const { title, file } = req.body.createCertificationDto;
-    const publicPath = "public/uploads/certifications";
+    let publicImageId: string | null = null;
 
-    const filename = UploadFileService.uploadSingle(file, publicPath);
-    if (!filename) {
-      return res.status(500).json({ error: "Internal server error" });
+    try {
+      const { title, file } = req.body.createCertificationDto;
+
+      const image = await UploadFileService.uploadSingle(file);
+
+      if (!image) {
+        return res.status(500).json({ error: "Cloudinary error" });
+      }
+
+      publicImageId = image.id;
+      const data = { title, image };
+
+      const certification = await new CreateCertification(
+        this.certificationRepository
+      ).execute(data);
+
+      res.status(201).json(certification);
+    } catch (error) {
+      if (publicImageId) await UploadFileService.deleteFile(publicImageId);
+      this.errorHandler(error, res);
     }
-
-    const fileUrl = `${envs.HOST}/app/certifications/${filename}`;
-    const data = { title, file: fileUrl };
-
-    new CreateCertification(this.certificationRepository)
-      .execute(data)
-      .then((certification) => res.status(201).json(certification))
-      .catch((error) => {
-        UploadFileService.deleteFile(filename, publicPath);
-        this.errorHandler(error, res);
-      });
   };
 
   get = (req: Request, res: Response) => {
@@ -62,13 +66,21 @@ export class CertificationtController {
       .catch((error) => this.errorHandler(error, res));
   };
 
-  delete = (req: Request, res: Response) => {
-    const { id } = req.params;
+  delete = async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
 
-    new DeleteCertification(this.certificationRepository)
-      .execute(id)
-      .then((certification) => res.status(200).json(certification))
-      .catch((error) => this.errorHandler(error, res));
+      const certification = await new DeleteCertification(
+        this.certificationRepository
+      ).execute(id);
+      const publicImageId = certification.image.id;
+
+      const wasDeleted = await UploadFileService.deleteFile(publicImageId);
+
+      res.status(200).json({ certification, cloudinaryDeleted: wasDeleted });
+    } catch (error) {
+      this.errorHandler(error, res);
+    }
   };
 
   private errorHandler(error: unknown, res: Response) {

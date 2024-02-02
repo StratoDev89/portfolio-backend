@@ -6,9 +6,15 @@ const certificationchema = new mongoose.Schema({
     required: [true, "title is required"],
     unique: true,
   },
-  url: {
-    type: String,
-    required: [true, "url is required"],
+  image: {
+    id: {
+      type: String,
+      required: [true, "image id is required"],
+    },
+    url: {
+      type: String,
+      required: [true, "image url is required"],
+    },
   },
 });
 

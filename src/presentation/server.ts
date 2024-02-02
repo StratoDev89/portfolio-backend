@@ -25,11 +25,10 @@ export class Server {
     this.app.use(cors());
 
     this.app.get('', (req, res) => {
-      res.status(200).json({message:'pingpong'})
+      res.status(200).json({message:'pong'})
     })
     this.app.use(express.json()); // raw
     this.app.use(express.urlencoded({ extended: true })); // x-www-form-urlencoded
-    this.app.use("/app", express.static("public/uploads"));
 
     this.app.use(this.routes);
 

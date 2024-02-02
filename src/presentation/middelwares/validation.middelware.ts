@@ -15,7 +15,7 @@ export class ValidationMiddelware {
       return res.status(400).json({ error });
     }
     const file = req.file;
-    
+
     const { title, description, techs } = req.body;
     req.body.createProjectDto = { title, description, techs, file };
 
@@ -36,6 +36,7 @@ export class ValidationMiddelware {
     }
 
     const file = req.file;
+
     const { title } = req.body;
 
     req.body.createCertificationDto = { title, file };

@@ -1,20 +1,14 @@
 import path from "path";
 import fs from "fs";
 import { CustomError } from "../../domain";
-import { UUIDAdapter } from "../../config";
+import { CloudinaryAdapter } from "../../config";
 
 export class UploadFileService {
-  private static checkFolder(folderPath: string) {
-    if (!fs.existsSync(folderPath)) {
-      fs.mkdirSync(folderPath);
-    }
-  }
-
-  static uploadSingle(
+  static async uploadSingle(
     file: Express.Multer.File,
-    folder: string,
+
     validExtensions = ["jpg", "jpeg", "webp", "gif", "png"]
-  ): string | null {
+  ) {
     try {
       const extension = file.mimetype.split("/").at(1);
 
@@ -22,27 +16,35 @@ export class UploadFileService {
         throw CustomError.badRequest("Invalid file extension");
       }
 
-      const destination = path.resolve(__dirname, "../../../", folder);
-      const filename = `${UUIDAdapter.v4()}.${extension}`;
-      const filePath = path.join(destination, filename);
+      const result = await CloudinaryAdapter.configure().uploader.upload(
+        file.path,
+        function (err: any, result: any) {
+          if (err) {
+            throw CustomError.internalServer("Cloudinary Error");
+          }
 
-      this.checkFolder(destination);
+          return result;
+        }
+      );
 
-      fs.writeFileSync(filePath, file.buffer);
-
-      return filename;
+      const image = { id: result.public_id, url: result.url };
+      return image;
     } catch (error: any) {
       console.log({ error: error.message });
-      return null
+      return null;
     }
   }
 
-  static deleteFile(filename: string, folder: string) {
-    const filePath = path.resolve(__dirname, "../../../", folder, filename);
+  static async deleteFile(publicId: string) {
+    const result = await CloudinaryAdapter.configure().uploader.destroy(
+      publicId
+    );
 
-    if (fs.existsSync(filePath)) {
-      fs.rmSync(filePath);
+    if (result.result === "ok") {
+      return true;
     }
+
+    return false;
   }
 
   uploadMultiple() {}
