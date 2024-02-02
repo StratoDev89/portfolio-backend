@@ -17,7 +17,7 @@ export class CertificationtController {
 
   create = async (req: Request, res: Response) => {
     const { title, file } = req.body.createCertificationDto;
-    const publicPath = "uploads/certifications";
+    const publicPath = "public/uploads/certifications";
 
     const filename = UploadFileService.uploadSingle(file, publicPath);
     if (!filename) {

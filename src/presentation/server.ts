@@ -29,7 +29,7 @@ export class Server {
     })
     this.app.use(express.json()); // raw
     this.app.use(express.urlencoded({ extended: true })); // x-www-form-urlencoded
-    this.app.use("/app", express.static("uploads"));
+    this.app.use("/app", express.static("public/uploads"));
 
     this.app.use(this.routes);
 

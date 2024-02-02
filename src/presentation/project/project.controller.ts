@@ -17,7 +17,7 @@ export class ProjectController {
 
   create = async (req: Request, res: Response) => {
     const { file, ...body } = req.body.createProjectDto;
-    const publicPath = "uploads/projects";
+    const publicPath = "public/uploads/projects";
 
     const filename = UploadFileService.uploadSingle(file, publicPath);
     if (!filename) {
