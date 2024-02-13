@@ -22,5 +22,7 @@ export class MongoConnection {
 
   static async disconnect() {
     await mongoose.disconnect();
+    console.log('mongo disconnect');
+    
   }
 }

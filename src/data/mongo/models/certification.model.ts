@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const certificationchema = new mongoose.Schema({
+const certificationSchema = new mongoose.Schema({
   title: {
     type: String,
     required: [true, "title is required"],
@@ -12,7 +12,7 @@ const certificationchema = new mongoose.Schema({
   },
 });
 
-certificationchema.set("toJSON", {
+certificationSchema.set("toJSON", {
   virtuals: true,
   versionKey: false,
   transform: function (doc, ret, options) {
@@ -22,5 +22,5 @@ certificationchema.set("toJSON", {
 
 export const CertificationModel = mongoose.model(
   "Certification",
-  certificationchema
+  certificationSchema
 );

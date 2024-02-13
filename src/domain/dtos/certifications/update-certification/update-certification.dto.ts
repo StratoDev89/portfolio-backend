@@ -1,4 +1,4 @@
-import { CreateCertificationDto } from "../..";
+import { CreateCertificationDto } from "../../..";
 
 export interface UpdateCertificationDto
   extends Partial<CreateCertificationDto> {

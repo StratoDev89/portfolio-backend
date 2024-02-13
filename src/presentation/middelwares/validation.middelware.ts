@@ -17,7 +17,7 @@ export class ValidationMiddelware {
     const file = req.file;
 
     const { title, description, techs, charge, projectUrl } = req.body;
-    
+
     req.body.createProjectDto = {
       title,
       description,
@@ -88,6 +88,23 @@ export class ValidationMiddelware {
     next();
   }
 
+  static validateLoginUserData(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    const [isValidData, error] = JoiAdapter.validateLoginUserSchema(req.body);
+
+    if (!isValidData) {
+      return res.status(400).json({ error });
+    }
+
+    const { username, password } = req.body;
+
+    req.body.loginUserDto = { username, password };
+    next();
+  }
+
   static mongoIdValidator(req: Request, res: Response, next: NextFunction) {
     const id = req.params.id;
 
@@ -95,6 +112,30 @@ export class ValidationMiddelware {
 
     if (!isValidMondoId) {
       return res.status(400).json({ error: "Invalid id" });
+    }
+
+    next();
+  }
+
+  static validateEmailData(req: Request, res: Response, next: NextFunction) {
+    const [isValidEmail, error] = JoiAdapter.validateEmail(req.body);
+
+    if (!isValidEmail) {
+      return res.status(400).json({ error: error });
+    }
+
+    next();
+  }
+
+  static validatePasswordlData(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    const [isValidEmail, error] = JoiAdapter.validatePassword(req.body);
+
+    if (!isValidEmail) {
+      return res.status(400).json({ error: error });
     }
 
     next();

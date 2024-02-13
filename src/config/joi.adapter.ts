@@ -8,6 +8,9 @@ export class JoiAdapter {
   private static projectUrl = Joi.string();
   private static image = Joi.any();
   private static url = Joi.string();
+  private static username = Joi.string();
+  private static password = Joi.string();
+  private static email = Joi.string().email({ tlds: { allow: false } });
 
   static validateCreateProjectSchema(data: any) {
     const schema = Joi.object({
@@ -63,6 +66,50 @@ export class JoiAdapter {
     const schema = Joi.object({
       title: this.title,
       url: this.url,
+    });
+
+    const { error } = schema.validate(data);
+
+    if (error) {
+      return [false, error.message];
+    }
+
+    return [true, undefined];
+  }
+
+  static validateUpdateUserSchema(data: any) {}
+
+  static validateLoginUserSchema(data: any) {
+    const schema = Joi.object({
+      username: this.username.required(),
+      password: this.password.required(),
+    });
+
+    const { error } = schema.validate(data);
+    if (error) {
+      return [false, error.message];
+    }
+
+    return [true, undefined];
+  }
+
+  static validateEmail(data: any) {
+    const schema = Joi.object({
+      email: this.email.required(),
+    });
+
+    const { error } = schema.validate(data);
+
+    if (error) {
+      return [false, error.message];
+    }
+
+    return [true, undefined];
+  }
+
+  static validatePassword(data: any) {
+    const schema = Joi.object({
+      password: this.password.required(),
     });
 
     const { error } = schema.validate(data);
