@@ -57,8 +57,12 @@ export class ProjectController {
   };
 
   update = (req: Request, res: Response) => {
+    const { file, ...body } = req.body.updateProjectDto;
     const id = req.params.id;
-    const data = req.body.updateProjectDto as UpdateProjectDto;
+    
+    const data = { ...body };
+
+    // UPDATE FILE 
 
     new UpdateProject(this.projectRepository)
       .execute({ ...data, id })

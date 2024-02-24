@@ -9,11 +9,20 @@ interface SendMailOptions {
 
 export class NodeMailerAdapter {
   private static transporter = nodemailer.createTransport({
-    service: envs.MAILER_SERVICE,
+    host: envs.SMTP_HOST,
+    port: envs.SMTP_PORT,
+    secure: true,
     auth: {
-      user: envs.MAILER_EMAIL,
-      pass: envs.MAILER_SECRET_KEY,
+      user: envs.SMTP_USER,
+      pass: envs.SMTP_PASS,
     },
+
+    // gmail config
+    // service: envs.MAILER_SERVICE,
+    // auth: {
+    //   user: envs.MAILER_EMAIL,
+    //   pass: envs.MAILER_SECRET_KEY,
+    // },
   });
 
   static async sendEmail(options: SendMailOptions): Promise<boolean> {
@@ -21,6 +30,7 @@ export class NodeMailerAdapter {
 
     try {
       const sentInfo = await this.transporter.sendMail({
+        from: '"Admin Strato-dev" <admin@strato-dev.pw>',
         to: to,
         subject: subject,
         html: htmlBody,
@@ -28,8 +38,8 @@ export class NodeMailerAdapter {
 
       return true;
     } catch (error) {
+      console.log({ error });
       return false;
     }
   }
-
 }

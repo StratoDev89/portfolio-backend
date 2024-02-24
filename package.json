@@ -7,7 +7,10 @@
     "dev": "tsnd --respawn --clear src/index.ts",
     "build": "rimraf ./dist && tsc",
     "start": "npm run build && node dist/index.js",
-    "seed":"tsnd ./src/data/mongo/seed/seed.ts"
+    "seed": "tsnd --respawn --clear ./src/data/seed/seed.ts",
+    "typeorm": "typeorm-ts-node-esm -d ./src/data/mysql/connection.ts",
+    "m:gen":"npm run typeorm migration:generate",
+    "m:run":"npm run typeorm migration:run"
   },
   "keywords": [],
   "author": "",
@@ -19,7 +22,7 @@
     "@types/express-fileupload": "^1.4.4",
     "@types/jsonwebtoken": "^9.0.5",
     "@types/multer": "^1.4.11",
-    "@types/node": "^20.8.0",
+    "@types/node": "^20.11.19",
     "@types/nodemailer": "^6.4.14",
     "@types/uuid": "^9.0.7",
     "rimraf": "^5.0.5",
@@ -38,7 +41,10 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.0.4",
     "multer": "^1.4.5-lts.1",
+    "mysql2": "^3.9.1",
     "nodemailer": "^6.9.9",
+    "reflect-metadata": "^0.2.1",
+    "typeorm": "^0.3.20",
     "uuid": "^9.0.1"
   }
 }

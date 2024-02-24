@@ -5,18 +5,21 @@ import {
   UpdateUserDto,
   UserDatasource,
   UserEntity,
-} from "../../../domain";
-import { UserModel } from "../../../data/mongo";
+} from "../../../../domain";
+
 import {
   BcryptAdapter,
   JwtAdapter,
   NodeMailerAdapter,
   envs,
-} from "../../../config";
+} from "../../../../config";
+import { SqlUserEntity } from "../../../../data/mysql";
 
-export class UserDatasourceImpl implements UserDatasource {
+export class UserMySqlDatasourceImpl implements UserDatasource {
   async login(loginUserDto: LoginUserDto) {
-    const user = await UserModel.findOne({ username: loginUserDto.username });
+    const user = await SqlUserEntity.findOne({
+      where: { username: loginUserDto.username },
+    });
     if (!user) throw CustomError.badRequest("User not found");
 
     const isMatching = BcryptAdapter.compare(
@@ -33,31 +36,31 @@ export class UserDatasourceImpl implements UserDatasource {
     if (!token) throw CustomError.internalServer("Internal server error");
 
     const { password, ...userEntity } = UserEntity.fromObject(user);
-
     return { user: userEntity, token };
   }
 
   async update(updateUserDto: UpdateUserDto): Promise<UserEntity> {
     const { id, ...updates } = updateUserDto;
 
-    const user = await UserModel.findById(id);
+    const user = await SqlUserEntity.findOneBy({ id: +id });
     if (!user) throw CustomError.badRequest("User not found");
 
     if (updates.password) {
       updates.password = BcryptAdapter.hash(updates.password);
     }
 
-    const userUpdated = await UserModel.findByIdAndUpdate(id, updates, {
-      new: true,
-    });
+    const result = await SqlUserEntity.update(id, updates);
 
-    if (!userUpdated) throw CustomError.internalServer("Internal server error");
-
-    return UserEntity.fromObject(userUpdated);
+    if (result.affected && result.affected > 0) {
+      const user = await SqlUserEntity.findOneBy({ id: +id });
+      return UserEntity.fromObject(user!);
+    } else {
+      throw CustomError.internalServer("Internal server error");
+    }
   }
 
   async sendRecoveryEmail(email: string): Promise<boolean> {
-    const user = await UserModel.findOne({ email });
+    const user = await SqlUserEntity.findOneBy({ email });
     if (!user) throw CustomError.badRequest("User not found");
 
     const userEntity = UserEntity.fromObject(user);
@@ -74,9 +77,9 @@ export class UserDatasourceImpl implements UserDatasource {
       to: envs.CLIENT_EMAIL,
       subject: "Recovery password",
       htmlBody: `
-        <h1>Follow this link to recovery your password<h1/>
-    <p>${envs.FRONTEND_HOST}/auth/change-password?${token}</p>
-    `,
+          <h1>Follow this link to recovery your password<h1/>
+      <p>${envs.FRONTEND_HOST}/auth/change-password?${token}</p>
+      `,
     };
 
     return await NodeMailerAdapter.sendEmail(options);
@@ -91,10 +94,7 @@ export class UserDatasourceImpl implements UserDatasource {
     const userId = payload.sub;
     const hash = BcryptAdapter.hash(password);
 
-    const userUpdated = await UserModel.findByIdAndUpdate(userId, {
-      password: hash,
-    });
-
+    const userUpdated = await SqlUserEntity.update(userId, { password: hash });
     if (!userUpdated) throw CustomError.internalServer("Internal Server Error");
 
     return true;

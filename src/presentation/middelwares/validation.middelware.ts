@@ -1,5 +1,9 @@
 import { Request, Response, NextFunction } from "express";
-import { JoiAdapter, Validators, envs } from "../../config";
+import {
+  JoiAdapter,
+  // Validators,
+  envs,
+} from "../../config";
 
 export class ValidationMiddelware {
   static validateCreateProjectData(
@@ -63,8 +67,18 @@ export class ValidationMiddelware {
       return res.status(400).json({ error });
     }
 
-    const { title, description, techs, image } = req.body;
-    req.body.updateProjectDto = { title, description, techs, image };
+    const file = req.file;
+    console.log(file);
+
+    const { title, description, techs, charge, projectUrl } = req.body;
+    req.body.updateProjectDto = {
+      title,
+      description,
+      techs,
+      file,
+      charge,
+      projectUrl,
+    };
 
     next();
   }
@@ -105,17 +119,17 @@ export class ValidationMiddelware {
     next();
   }
 
-  static mongoIdValidator(req: Request, res: Response, next: NextFunction) {
-    const id = req.params.id;
+  // static mongoIdValidator(req: Request, res: Response, next: NextFunction) {
+  //   const id = req.params.id;
 
-    const isValidMondoId = Validators.isMongoID(id);
+  //   const isValidMondoId = Validators.isMongoID(id);
 
-    if (!isValidMondoId) {
-      return res.status(400).json({ error: "Invalid id" });
-    }
+  //   if (!isValidMondoId) {
+  //     return res.status(400).json({ error: "Invalid id" });
+  //   }
 
-    next();
-  }
+  //   next();
+  // }
 
   static validateEmailData(req: Request, res: Response, next: NextFunction) {
     const [isValidEmail, error] = JoiAdapter.validateEmail(req.body);

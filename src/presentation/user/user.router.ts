@@ -1,15 +1,19 @@
 import { Router } from "express";
 import { UserController } from "./user.controller";
-import { UserDatasourceImpl, UserRepositoryImpl } from "../../infraestructure";
+import { UserRepositoryImpl } from "../../infraestructure";
+// import { UserDatasourceImpl, UserRepositoryImpl } from "../../infraestructure";
 import { ValidationMiddelware, AuthMiddelware } from "..";
-import { Validators } from "../../config";
+// import { Validators } from "../../config";
+import { UserMySqlDatasourceImpl } from "../../infraestructure/users/datasource/mysql/user.mysql.datasource.impl";
 
 export class UserRoutes {
   static get routes(): Router {
     const router = Router();
 
-    const userDatasourceImpl = new UserDatasourceImpl();
-    const userrepositoryImpl = new UserRepositoryImpl(userDatasourceImpl);
+    // const userDatasourceImpl = new UserDatasourceImpl();
+    const userMySqlDatasourceImpl = new UserMySqlDatasourceImpl();
+
+    const userrepositoryImpl = new UserRepositoryImpl(userMySqlDatasourceImpl);
 
     const controller = new UserController(userrepositoryImpl);
 
@@ -21,7 +25,7 @@ export class UserRoutes {
 
     router.put(
       "/:id",
-      ValidationMiddelware.mongoIdValidator,
+      // ValidationMiddelware.mongoIdValidator,
       AuthMiddelware.checkAuthHeaders,
       controller.update
     );

@@ -1,7 +1,8 @@
 import { Router } from "express";
 import { CertificationtController } from "./certification.controller";
 import {
-  CertificationDatasourceImpl,
+  // CertificationDatasourceImpl,
+  CertificationMySqlDatasourceImpl,
   CertificationRepositoryImpl,
 } from "../../infraestructure";
 import { ValidationMiddelware, AuthMiddelware } from "..";
@@ -10,9 +11,12 @@ export class CertificationRoutes {
   static get routes(): Router {
     const router = Router();
 
-    const certificationDatasourceImpl = new CertificationDatasourceImpl();
+    // const certificationDatasourceImpl = new CertificationDatasourceImpl();
+    const certificationMySqlDatasourceImpl =
+      new CertificationMySqlDatasourceImpl();
+
     const certificationRepositoryImpl = new CertificationRepositoryImpl(
-      certificationDatasourceImpl
+      certificationMySqlDatasourceImpl
     );
 
     const controller = new CertificationtController(
@@ -28,12 +32,16 @@ export class CertificationRoutes {
 
     router.get("", controller.getAll);
 
-    router.get("/:id", ValidationMiddelware.mongoIdValidator, controller.get);
+    router.get(
+      "/:id",
+      // ValidationMiddelware.mongoIdValidator,
+      controller.get
+    );
 
     router.put(
       "/:id",
       AuthMiddelware.checkAuthHeaders,
-      ValidationMiddelware.mongoIdValidator,
+      // ValidationMiddelware.mongoIdValidator,
       ValidationMiddelware.validateUpdateCertificationData,
       controller.update
     );
@@ -41,24 +49,10 @@ export class CertificationRoutes {
     router.delete(
       "/:id",
       AuthMiddelware.checkAuthHeaders,
-      ValidationMiddelware.mongoIdValidator,
+      // ValidationMiddelware.mongoIdValidator,
       controller.delete
     );
 
     return router;
   }
 }
-
-// ```
-//  - seharia una carpeta en certification con su router y su controller para el file upload
-//  - la ruta debe se algo como single/:type/:img
-//  el type es para ser flexible por si la imagen es de proyecto o certification
-
-//  lo manejaria a traves de un servicio porq sera compartido entre el datasource de proyectos y de certificaticons
-
-// el servicio debe verificar si existe la carpeta de desitno
-// se neceista el archvo el foulder
-// extensiones validas
-// necesito uuid
-// express fileupload
-// ```

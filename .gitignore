@@ -12,3 +12,4 @@ coverage/
 docker-compose.yml
 *.yml
 dist/
+mysql_data/

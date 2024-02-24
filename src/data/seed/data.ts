@@ -1,4 +1,4 @@
-import { UUIDAdapter, envs } from "../../../config";
+import { UUIDAdapter, envs } from "../../config";
 
 export const data = {
   email: envs.CLIENT_EMAIL,

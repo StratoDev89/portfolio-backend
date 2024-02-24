@@ -1,7 +1,8 @@
 import { Router } from "express";
 import { ProjectController } from "./project.controller";
 import {
-  ProjectDatasourceImpl,
+  // ProjectDatasourceImpl,
+  ProjectMySqlDatasourceImpl,
   ProjectRepositoryImpl,
 } from "../../infraestructure";
 import { ValidationMiddelware, AuthMiddelware } from "..";
@@ -10,9 +11,11 @@ import { MulterAdapter } from "../../config/";
 export class ProjectRoutes {
   static get routes(): Router {
     const router = Router();
-    const projectDatasourceImpl = new ProjectDatasourceImpl();
+    // const projectDatasourceImpl = new ProjectDatasourceImpl();
+    const projectMySqlDatasourceImpl = new ProjectMySqlDatasourceImpl();
+
     const projectRepositoryImpl = new ProjectRepositoryImpl(
-      projectDatasourceImpl
+      projectMySqlDatasourceImpl
     );
 
     const controller = new ProjectController(projectRepositoryImpl);
@@ -27,20 +30,25 @@ export class ProjectRoutes {
 
     router.get("", controller.getAll);
 
-    router.get("/:id", ValidationMiddelware.mongoIdValidator, controller.get);
+    router.get(
+      "/:id",
+      // ValidationMiddelware.mongoIdValidator,
+      controller.get
+    );
 
     router.put(
       "/:id",
       AuthMiddelware.checkAuthHeaders,
-      ValidationMiddelware.mongoIdValidator,
+      // ValidationMiddelware.mongoIdValidator,
+      MulterAdapter.fileMiddelware().single("image"),
       ValidationMiddelware.validateUpdateProjectData,
       controller.update
     );
-    
+
     router.delete(
       "/:id",
       AuthMiddelware.checkAuthHeaders,
-      ValidationMiddelware.mongoIdValidator,
+      // ValidationMiddelware.mongoIdValidator,
       controller.delete
     );
 

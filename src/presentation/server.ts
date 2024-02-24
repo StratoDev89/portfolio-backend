@@ -1,3 +1,4 @@
+import "reflect-metadata"
 import express, { Router } from "express";
 import cors from "cors";
 
@@ -24,7 +25,7 @@ export class Server {
   async start() {
     this.app.use(cors());
 
-    this.app.get('', (req, res) => {
+    this.app.get('/api', (req, res) => {
       res.status(200).json({message:'pong'})
     })
     this.app.use(express.json()); // raw

@@ -51,6 +51,8 @@ export class JoiAdapter {
       description: this.description,
       techs: this.techs,
       image: this.image,
+      charge: this.charge,
+      projectUrl: this.projectUrl,
     });
 
     const { error } = schema.validate(data);

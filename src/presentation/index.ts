@@ -12,3 +12,7 @@ export * from "./middelwares/validation.middelware";
 export * from "./middelwares/auth.middelware";
 
 export * from "./services/uploadFile";
+export * from "./services/emailService";
+
+export * from "./contact/contact.routes";
+export * from "./contact/contact.controller";
