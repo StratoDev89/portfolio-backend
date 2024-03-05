@@ -1,7 +1,6 @@
 import { Router } from "express";
 import { ProjectController } from "./project.controller";
 import {
-  // ProjectDatasourceImpl,
   ProjectMySqlDatasourceImpl,
   ProjectRepositoryImpl,
 } from "../../infraestructure";
@@ -11,7 +10,6 @@ import { MulterAdapter } from "../../config/";
 export class ProjectRoutes {
   static get routes(): Router {
     const router = Router();
-    // const projectDatasourceImpl = new ProjectDatasourceImpl();
     const projectMySqlDatasourceImpl = new ProjectMySqlDatasourceImpl();
 
     const projectRepositoryImpl = new ProjectRepositoryImpl(
@@ -32,14 +30,12 @@ export class ProjectRoutes {
 
     router.get(
       "/:id",
-      // ValidationMiddelware.mongoIdValidator,
       controller.get
     );
 
     router.put(
       "/:id",
       AuthMiddelware.checkAuthHeaders,
-      // ValidationMiddelware.mongoIdValidator,
       MulterAdapter.fileMiddelware().single("image"),
       ValidationMiddelware.validateUpdateProjectData,
       controller.update
@@ -48,7 +44,6 @@ export class ProjectRoutes {
     router.delete(
       "/:id",
       AuthMiddelware.checkAuthHeaders,
-      // ValidationMiddelware.mongoIdValidator,
       controller.delete
     );
 

@@ -1,7 +1,6 @@
 import { Router } from "express";
 import { CertificationtController } from "./certification.controller";
 import {
-  // CertificationDatasourceImpl,
   CertificationMySqlDatasourceImpl,
   CertificationRepositoryImpl,
 } from "../../infraestructure";
@@ -11,7 +10,6 @@ export class CertificationRoutes {
   static get routes(): Router {
     const router = Router();
 
-    // const certificationDatasourceImpl = new CertificationDatasourceImpl();
     const certificationMySqlDatasourceImpl =
       new CertificationMySqlDatasourceImpl();
 
@@ -34,14 +32,12 @@ export class CertificationRoutes {
 
     router.get(
       "/:id",
-      // ValidationMiddelware.mongoIdValidator,
       controller.get
     );
 
     router.put(
       "/:id",
       AuthMiddelware.checkAuthHeaders,
-      // ValidationMiddelware.mongoIdValidator,
       ValidationMiddelware.validateUpdateCertificationData,
       controller.update
     );
@@ -49,7 +45,6 @@ export class CertificationRoutes {
     router.delete(
       "/:id",
       AuthMiddelware.checkAuthHeaders,
-      // ValidationMiddelware.mongoIdValidator,
       controller.delete
     );
 

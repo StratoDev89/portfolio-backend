@@ -4,7 +4,7 @@ import {
   // UserModel, MongoConnection,
   data,
 } from "../mongo";
-import { SqlDatabaseConnection, SqlUserEntity } from "../mysql";
+import { SqlDatabaseConnection, SqlUserEntity } from "..";
 
 export async function seed() {
   await SqlDatabaseConnection.connect();

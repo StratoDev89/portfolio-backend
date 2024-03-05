@@ -13,7 +13,7 @@ import {
   NodeMailerAdapter,
   envs,
 } from "../../../../config";
-import { SqlUserEntity } from "../../../../data/mysql";
+import { SqlUserEntity } from "../../../../data";
 
 export class UserMySqlDatasourceImpl implements UserDatasource {
   async login(loginUserDto: LoginUserDto) {

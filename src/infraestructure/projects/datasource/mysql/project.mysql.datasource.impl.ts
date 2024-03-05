@@ -1,4 +1,4 @@
-import { SqlProjectEntity } from "../../../../data/mysql";
+import { SqlProjectEntity } from "../../../../data";
 import {
   CreateProjectDto,
   CustomError,

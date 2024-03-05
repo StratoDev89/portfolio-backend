@@ -8,7 +8,7 @@ export class UploadFileService {
     validExtensions = ["jpg", "jpeg", "webp", "gif", "png"]
   ) {
     try {
-      const extension = file.mimetype.split("/").at(1);
+      const extension = file.mimetype.split("/")[1];
 
       if (!extension || !validExtensions.includes(extension)) {
         throw CustomError.badRequest("Invalid file extension");

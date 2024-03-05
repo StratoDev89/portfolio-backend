@@ -1,7 +1,5 @@
 import { envs } from "./config/envs";
-import { seed } from "./data/mongo";
-// import { MongoConnection, seed } from "./data/mongo";
-import { SqlDatabaseConnection } from "./data/mysql";
+import { SqlDatabaseConnection, seed } from "./data";
 import { AppRoutes, Server } from "./presentation";
 
 (async () => {
@@ -11,14 +9,7 @@ import { AppRoutes, Server } from "./presentation";
 async function main() {
   await seed();
 
-  // CONNECTION FOR MONGO DATABASE
-  // await MongoConnection.connect({
-  //   mongoURL: envs.DB_URL,
-  //   dbName: envs.DB_NAME,
-  // });
-
   // CONNECTION FOR SQL DATABASE
-
   await SqlDatabaseConnection.connect();
 
   const server = new Server({
