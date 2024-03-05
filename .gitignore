@@ -9,7 +9,6 @@ postgres/
 node_modules/
 build/
 coverage/
-docker-compose.yml
 *.yml
 dist/
 mysql_data/

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { CertificationtController } from "./certification.controller";
 import {
-  // CertificationDatasourceImpl,
+  CertificationDatasourceImpl,
   CertificationMySqlDatasourceImpl,
   CertificationRepositoryImpl,
 } from "../../infraestructure";

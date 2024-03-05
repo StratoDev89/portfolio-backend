@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import {
   JoiAdapter,
-  // Validators,
+  Validators,
   envs,
 } from "../../config";
 
@@ -119,17 +119,17 @@ export class ValidationMiddelware {
     next();
   }
 
-  // static mongoIdValidator(req: Request, res: Response, next: NextFunction) {
-  //   const id = req.params.id;
+  static mongoIdValidator(req: Request, res: Response, next: NextFunction) {
+    const id = req.params.id;
 
-  //   const isValidMondoId = Validators.isMongoID(id);
+    const isValidMondoId = Validators.isMongoID(id);
 
-  //   if (!isValidMondoId) {
-  //     return res.status(400).json({ error: "Invalid id" });
-  //   }
+    if (!isValidMondoId) {
+      return res.status(400).json({ error: "Invalid id" });
+    }
 
-  //   next();
-  // }
+    next();
+  }
 
   static validateEmailData(req: Request, res: Response, next: NextFunction) {
     const [isValidEmail, error] = JoiAdapter.validateEmail(req.body);

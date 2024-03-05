@@ -1,6 +1,5 @@
 import { envs } from "./config/envs";
-import { seed } from "./data/mongo";
-// import { MongoConnection, seed } from "./data/mongo";
+import { MongoConnection, seed } from "./data/mongo";
 import { SqlDatabaseConnection } from "./data/mysql";
 import { AppRoutes, Server } from "./presentation";
 

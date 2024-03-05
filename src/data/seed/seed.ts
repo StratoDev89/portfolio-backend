@@ -1,9 +1,6 @@
 import "reflect-metadata";
 import { BcryptAdapter, NodeMailerAdapter, envs } from "../../config";
-import {
-  // UserModel, MongoConnection,
-  data,
-} from "../mongo";
+import { data } from "./data";
 import { SqlDatabaseConnection, SqlUserEntity } from "../mysql";
 
 export async function seed() {
