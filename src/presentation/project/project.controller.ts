@@ -1,14 +1,5 @@
 import { Request, Response } from "express";
-import {
-  CreateProject,
-  CustomError,
-  DeleteProject,
-  GetAllProjects,
-  GetProject,
-  ProjectRepository,
-  UpdateProject,
-  UpdateProjectDto,
-} from "../../domain";
+import { CreateProject, CustomError, DeleteProject, GetAllProjects, GetProject, ProjectRepository, UpdateProject, UpdateProjectDto } from "../../domain";
 import { UploadFileService } from "..";
 
 export class ProjectController {
@@ -30,9 +21,7 @@ export class ProjectController {
 
       const data = { ...body, image };
 
-      const project = await new CreateProject(this.projectRepository).execute(
-        data
-      );
+      const project = await new CreateProject(this.projectRepository).execute(data);
       res.status(201).json(project);
     } catch (error) {
       if (publicImageId) await UploadFileService.deleteFile(publicImageId);
@@ -56,14 +45,32 @@ export class ProjectController {
       .catch((error) => this.errorHandler(error, res));
   };
 
-  update = (req: Request, res: Response) => {
+  update = async (req: Request, res: Response) => {
     const { file, ...body } = req.body.updateProjectDto;
     const id = req.params.id;
+
+    if (!file) {
+      const data = { ...body };
+
+      new UpdateProject(this.projectRepository)
+        .execute({ ...data, id })
+        .then((project) => res.status(200).json(project))
+        .catch((error) => this.errorHandler(error, res));
+      return;
+    }
+
+    const project = await new GetProject(this.projectRepository).execute(id);
+    const { image } = project;
+    const result = await UploadFileService.deleteFile(image.id);
+
+    if (!result) {
+      throw CustomError.internalServer("error updating image");
+    }
+
+    const updatedImage = await UploadFileService.uploadSingle(file);
     
-    const data = { ...body };
-
-    // UPDATE FILE 
-
+    const data = { image:updatedImage, ...body };
+    
     new UpdateProject(this.projectRepository)
       .execute({ ...data, id })
       .then((project) => res.status(200).json(project))
@@ -74,9 +81,7 @@ export class ProjectController {
     try {
       const { id } = req.params;
 
-      const project = await new DeleteProject(this.projectRepository).execute(
-        id
-      );
+      const project = await new DeleteProject(this.projectRepository).execute(id);
 
       const publicImageId = project.image.id;
 
