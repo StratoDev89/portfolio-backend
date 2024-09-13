@@ -68,7 +68,6 @@ export class ValidationMiddelware {
     }
 
     const file = req.file;
-    console.log(file);
 
     const { title, description, techs, charge, projectUrl } = req.body;
     req.body.updateProjectDto = {
