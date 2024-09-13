@@ -30,7 +30,7 @@ export class NodeMailerAdapter {
 
     try {
       const sentInfo = await this.transporter.sendMail({
-        from: '"Admin Strato-dev" <admin@strato-dev.pw>',
+        from: '"Support Strato-dev" <support@strato-dev.pw>',
         to: to,
         subject: subject,
         html: htmlBody,
