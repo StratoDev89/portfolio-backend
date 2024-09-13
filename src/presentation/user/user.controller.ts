@@ -1,13 +1,5 @@
 import { Request, Response } from "express";
-import {
-  CustomError,
-  UpdateUser,
-  UserRepository,
-  LoginUser,
-  RecoveryPassword,
-  ChangePassword,
-  ChangePasswordDto,
-} from "../../domain";
+import { CustomError, UpdateUser, UserRepository, LoginUser, RecoveryPassword, ChangePassword, ChangePasswordDto } from "../../domain";
 
 export class UserController {
   constructor(private userRepository: UserRepository) {}
@@ -58,6 +50,10 @@ export class UserController {
       .catch((error) => this.errorHandler(error, res));
   };
 
+  check = (req: Request, res: Response) => {
+    res.status(200).json({ message: "valid token" });
+  };
+
   private errorHandler(error: unknown, res: Response) {
     if (error instanceof CustomError) {
       return res.status(error.statusCode).json({ error: error.message });
@@ -66,4 +62,3 @@ export class UserController {
     res.status(500).json({ error: "Internal server error" });
   }
 }
-

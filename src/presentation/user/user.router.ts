@@ -43,6 +43,12 @@ export class UserRoutes {
       controller.changePassword
     );
 
+    router.get(
+      "/check",
+      AuthMiddelware.checkAuthHeaders,
+      controller.check
+    );
+
     return router;
   }
 }
